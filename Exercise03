@@ -1,1 +1,78 @@
+//run mouse over clock to start
+//every second the colour of the face changes 
+//every minute the boarder colour changes 
+//running mouse over clock resets the colour 
+//colour keeps track of the time
 
+color col = color(127, 0, 255);
+color newCol;
+float lerpSpeed = 0.05;
+
+float rotSeconds = 0;
+float rotMinutes = 0;
+float rotHours = 0;
+int lastSecond = 0;
+int lastMinute = 0;
+int lastHour = 0;
+
+float faceSize = 500;
+
+
+color outlineCol = color(255);
+color secondCol = color(200, 0, 0);
+
+
+void setup() {
+  size(800, 600);
+  strokeWeight(2);
+}
+
+void draw() {
+ float r = map(mouseX, 0, width, 0, 255); 
+ float g = map(mouseY, 0, height, 0, 255); 
+  newCol = color(r, g, 255);
+  
+  col = lerpColor(col, newCol, lerpSpeed/2);
+  
+  fill(col);
+  ellipse(width/2, height/2, 500, 500);
+  
+  int s = second();
+  int m = minute();
+  int h = hour();
+  
+  if (s != lastSecond) {
+    rotSeconds = ((float) s / 60) * TWO_PI;
+    lastSecond = s;
+   
+  }
+  
+  if (m != lastMinute) {
+    rotMinutes = ((float) m / 60) * TWO_PI; 
+    lastMinute = m;
+  }
+  
+  if (h != lastHour) {
+    rotHours = ((float) h / 12) * TWO_PI;  
+    println(h);
+    lastHour = h;
+  }
+  
+  fill(newCol* s);
+  stroke(newCol* m);
+  ellipse(width/2, height/2, faceSize, faceSize);
+  
+  stroke(0, 127, 255, 44);
+  for(int i=0; i<12; i++) {
+    float rot = ((float) i/12) * TWO_PI;
+    pushMatrix();
+    translate(width/2, height/2);
+    rotate(rot);
+    line(0, faceSize/5, 0, faceSize/2);
+    popMatrix();
+  }
+ 
+ fill(newCol);
+  ellipse(width/2, height/2, 10, 10);
+
+}
