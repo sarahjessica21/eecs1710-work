@@ -29,9 +29,9 @@ void draw() {
     float x = random(width);
     float y = random(height);
     color c = face.get(int(x), int(y));
-    fill(c, 500);
+    fill(c, 50);
     noStroke();
-    ellipse(x, y, 2, 2);
+    ellipse(x, y, 10, 10);
   }
   for (Dot dot : dots) {
     dot.run();

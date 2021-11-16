@@ -11,7 +11,7 @@ class Dot {
     col = _col;
     
     float b = brightness(col) / 255;
-    speed = b / 2000; //5000 10000
+    speed = b / 5000; //5000 10000
     dotSize = abs(10 - (b * 10)) + 2; //10
   }
   
