@@ -24,6 +24,7 @@ void setup() {
 }
 
 void draw() {
+  //background(255);
   //image(face, 0, 0);
   for (int i = 0; i < 500; i++) {
     float x = random(width);
