@@ -1,6 +1,12 @@
 import ddf.minim.*;
+import ddf.minim.spi.*; // for AudioRecordingStream
+import ddf.minim.ugens.*;
 
 Minim minim;
+
+TickRate rateControl;
+FilePlayer filePlayer;
+AudioOutput out;
 
 AudioSample sound1;
 AudioSample sound2;
@@ -35,53 +41,62 @@ AudioSample sound30;
 AudioSample sound31;
 AudioSample sound32;
 AudioSample music1;
+String fileName = "music.mp3";
 
 void setup()
 {
-  size(696, 636, P3D); 
+  size(696, 836, P3D); 
   frameRate(10); //<- have to use this to get P3D to run on my computer 
   
   minim = new Minim(this);
   
+  filePlayer = new FilePlayer( minim.loadFileStream(fileName) );
+  //filePlayer.loop();
+ 
+  rateControl = new TickRate(1.f);
+   
+  out = minim.getLineOut();
+
+  filePlayer.patch(rateControl).patch(out);
   
-  sound1 = minim.loadSample("trumpet.wav", 512); //512 buffer size 
-  sound2 = minim.loadSample("horn.wav", 512);
-  sound3 = minim.loadSample("bassdrum1.wav", 512);
-  sound4 = minim.loadSample("bell.wav", 512);
-  sound5 = minim.loadSample("snare1.wav", 512);
-  sound6 = minim.loadSample("kettledrum.wav", 512);
-  sound7 = minim.loadSample("whistle.wav", 512);
-  sound8 = minim.loadSample("cymbal1.wav", 512);
-  sound9 = minim.loadSample("saxophone1.wav", 512);
-  sound10 = minim.loadSample("piccolo.wav", 512);
+  sound1 = minim.loadSample("cl_hihat.wav", 512); //512 buffer size 
+  sound2 = minim.loadSample("claves1.wav", 512);
+  sound3 = minim.loadSample("conga1.wav", 512);
+  sound4 = minim.loadSample("cowbell1.wav", 512);
+  sound5 = minim.loadSample("crashcym.wav", 512);
+  sound6 = minim.loadSample("handclap.wav", 512);
+  sound7 = minim.loadSample("hi_conga.wav", 512);
+  sound8 = minim.loadSample("hightom.wav", 512);
+  sound9 = minim.loadSample("kick1.wav", 512);
+  sound10 = minim.loadSample("kick2.wav", 512);
   sound11 = minim.loadSample("hihat.wav", 512);
-  sound12 = minim.loadSample("cymbal2.wav", 512);
+  sound12 = minim.loadSample("maracas.wav", 512);
   sound13 = minim.loadSample("bassdrum2.wav", 512);
-  sound14 = minim.loadSample("electricguitar.wav", 512);
-  sound15 = minim.loadSample("electricpiano.wav", 512);
-  sound16 = minim.loadSample("cross-sticks.wav", 512);
-  sound17 = minim.loadSample("claves.wav", 512);
-  sound18 = minim.loadSample("cymbal3.wav", 512);
-  sound19 = minim.loadSample("guitar1.wav", 512);
-  sound20 = minim.loadSample("bass2.wav", 512);
-  sound21 = minim.loadSample("flute.wav", 512);
+  sound14 = minim.loadSample("open_hh.wav", 512);
+  sound15 = minim.loadSample("rimshot.wav", 512);
+  sound16 = minim.loadSample("snare.wav", 512);
+  sound17 = minim.loadSample("claves2.wav", 512);
+  sound18 = minim.loadSample("tom1.wav", 512);
+  sound19 = minim.loadSample("909hitom.wav", 512);
+  sound20 = minim.loadSample("909kick.wav", 512);
+  sound21 = minim.loadSample("909kick2.wav", 512);
   sound22 = minim.loadSample("cowbell.wav", 512);
-  sound23 = minim.loadSample("bass1.wav", 512);
-  sound24 = minim.loadSample("electric-drum.wav", 512);
-  sound25 = minim.loadSample("snare2.wav", 512);
-  sound26 = minim.loadSample("pizzicato.wav", 512);
-  sound27 = minim.loadSample("bottle.wav", 512);
+  sound23 = minim.loadSample("909lowtom.wav", 512);
+  sound24 = minim.loadSample("909midtom.wav", 512);
+  sound25 = minim.loadSample("909rim.wav", 512);
+  sound26 = minim.loadSample("909snare.wav", 512);
+  sound27 = minim.loadSample("909snare2.wav", 512);
   sound28 = minim.loadSample("clap.wav", 512);
-  sound29 = minim.loadSample("guitar2.wav", 512);
+  sound29 = minim.loadSample("606cymbal.wav", 512);
   sound30 = minim.loadSample("snare3.wav", 512);
-  sound31 = minim.loadSample("electronic-kick.wav", 512);
-  sound32 = minim.loadSample("breath-noise.wav", 512);
+  sound31 = minim.loadSample("606kick.wav", 512);
+  sound32 = minim.loadSample("606tom.wav", 512);
   music1 = minim.loadSample("music.mp3", 512);
 }
 
 
 void draw(){
-  background(0); //#CECECE grey
+  background(#FFA2F3); //#CECECE grey
   
   //FIRST ROW 
   fill(255); //orange #F79E0C
@@ -90,9 +105,9 @@ void draw(){
   if(mouseX > 15 && mouseX < 75 && mouseY > 15 && mouseY < 75)
   fill(#F79E0C);
   rect(15, 15, 70, 70);
-  String a = "trumpet";
-  fill(255); //white 
-  text(a, 27, 90, 280, 320); //x, y; w, h
+  String a = "hi-hat";
+  fill(0); 
+  text(a, 33, 90, 280, 320); //x, y; w, h
 
   fill(255); //blue #49DDF0
   rect(100, 15, 70, 70); //100 across, 15 down and rect is 70 by 70
@@ -100,9 +115,9 @@ void draw(){
   if(mouseX > 100 && mouseX < 175 && mouseY > 15 && mouseY < 75)
   fill(#49DDF0);
   rect(100, 15, 70, 70);
-  String b = "horn";
-  fill(255); //white
-  text(b, 121, 90, 280, 320); //x, y; w, h
+  String b = "claves 1";
+  fill(0); 
+  text(b, 112, 90, 280, 320); //x, y; w, h
   
   fill(255); //green #35C16B
   rect(185, 15, 70, 70); //185 across, 15 down and rect is 70 by 70
@@ -110,9 +125,9 @@ void draw(){
   if(mouseX > 185 && mouseX < 245 && mouseY > 15 && mouseY < 75)
   fill(#35C16B);
   rect(185, 15, 70, 70);
-  String c = "bass drum";
-  fill(255); //white
-  text(c, 190, 90, 280, 320); //x, y; w, h
+  String c = "conga";
+  fill(0); 
+  text(c, 202, 90, 280, 320); //x, y; w, h
   
   fill(255); //yellow #F0DE16
   rect(270, 15, 70, 70); //270 across, 15 down and rect is 70 by 70
@@ -120,9 +135,9 @@ void draw(){
   if(mouseX > 270 && mouseX < 330 && mouseY > 15 && mouseY < 75)
   fill(#F0DE16);
   rect(270, 15, 70, 70);
-  String d = "bell";
-  fill(255); //white
-  text(d, 293, 90, 280, 320); //x, y; w, h
+  String d = "cowbell 1";
+  fill(0); 
+  text(d, 278, 90, 280, 320); //x, y; w, h
 
   fill(255); //pink #F016CC
   rect(355, 15, 70, 70); //355 across, 15 down and rect is 70 by 70
@@ -130,9 +145,9 @@ void draw(){
   if(mouseX > 355 && mouseX < 415 && mouseY > 15 && mouseY < 75)
   fill(#F016CC);
   rect(355, 15, 70, 70);
-  String e = "snare 1";
-  fill(255); //white
-  text(e, 370, 90, 280, 320); //x, y; w, h
+  String e = "crash cymbal";
+  fill(0); 
+  text(e, 352, 90, 280, 320); //x, y; w, h
   
   fill(255); //darker orange #F07416
   rect(440, 15, 70, 70); //440 across, 15 down and rect is 70 by 70
@@ -140,9 +155,9 @@ void draw(){
   if(mouseX > 440 && mouseX < 500 && mouseY > 15 && mouseY < 75)
   fill(#F07416);
   rect(440, 15, 70, 70);
-  String f = "kettle drum";
-  fill(255); //white
-  text(f, 442, 90, 280, 320); //x, y; w, h
+  String f = "clap 1";
+  fill(0); 
+  text(f, 458, 90, 280, 320); //x, y; w, h
   
   fill(#CECECE); //purple #8916F0
   rect(525, 15, 70, 70); //525 across, 15 down and rect is 70 by 70
@@ -150,9 +165,9 @@ void draw(){
   if(mouseX > 525 && mouseX < 585 && mouseY > 15 && mouseY < 75)
   fill(#8916F0);
   rect(525, 15, 70, 70);
-  String g = "whistle";
-  fill(255); //white
-  text(g, 541, 90, 280, 320); //x, y; w, h
+  String g = "hi conga";
+  fill(0);
+  text(g, 536, 90, 280, 320); //x, y; w, h
   
   fill(#CECECE); //red #F01641
   rect(610, 15, 70, 70); //610 across, 15 down and rect is 70 by 70
@@ -160,8 +175,8 @@ void draw(){
   if(mouseX > 610 && mouseX < 670 && mouseY > 15 && mouseY < 75)
   fill(#F01641);
   rect(610, 15, 70, 70);
-  String h = "cymbal 1";
-  fill(255); //white
+  String h = "hi tom 1";
+  fill(0); 
   text(h, 620, 90, 280, 320); //x, y; w, h
 //------------------------------------------------------------------------------------
  
@@ -170,41 +185,41 @@ void draw(){
   rect(15, 120, 70, 70); //15 across, 120 down and rect is 70 by 70
   if(mousePressed)
   if(mouseX > 15 && mouseX < 75 && mouseY > 120 && mouseY < 180)
-  fill(#A1A1E0);
+  fill(#3D2EA2);
   rect(15, 120, 70, 70);
-  String i = "saxophone";
-  fill(255); //white
-  text(i, 18, 195, 280, 320); //x, y; w, h
+  String i = "kick 1";
+  fill(0);
+  text(i, 34, 195, 280, 320); //x, y; w, h
   
   fill(255); //lime green #C9E0A1
   rect(100, 120, 70, 70); //100 across, 120 down and rect is 70 by 70
   if(mousePressed)
   if(mouseX > 100 && mouseX < 175 && mouseY > 120 && mouseY < 180)
-  fill(#C9E0A1);
+  fill(#25E5D4);
   rect(100, 120, 70, 70);
-  String j = "piccolo";
-  fill(255); //white
-  text(j, 115, 195, 280, 320); //x, y; w, h
+  String j = "kick 2";
+  fill(0); 
+  text(j, 120, 195, 280, 320); //x, y; w, h
   
   fill(255); //light pink #E0A1DD
   rect(185, 120, 70, 70); //185 across, 120 down and rect is 70 by 70
   if(mousePressed)
   if(mouseX > 185 && mouseX < 245 && mouseY > 120 && mouseY < 180)
-  fill(#E0A1DD);
+  fill(#AA3981);
   rect(185, 120, 70, 70);
   String k = "hi-hat";
-  fill(255); //white
+  fill(0); 
   text(k, 202, 195, 280, 320); //x, y; w, h
   
   fill(255); //light blue #A1E0E0
   rect(270, 120, 70, 70); //270 across, 120 down and rect is 70 by 70
   if(mousePressed)
   if(mouseX > 270 && mouseX < 330 && mouseY > 120 && mouseY < 180)
-  fill(#A1E0E0);
+  fill(#39AA94);
   rect(270, 120, 70, 70);
-  String l = "cymbal 2";
-  fill(255); //white
-  text(l, 279, 195, 280, 320); //x, y; w, h
+  String l = "maracas";
+  fill(0); 
+  text(l, 281, 195, 280, 320); //x, y; w, h
   
   fill(255); //darker blue #6077E8
   rect(355, 120, 70, 70); //355 across, 120 down and rect is 70 by 70
@@ -213,7 +228,7 @@ void draw(){
   fill(#6077E8);
   rect(355, 120, 70, 70); 
   String m = "base drum 1";
-  fill(255); //white
+  fill(0); 
   text(m, 354, 195, 280, 320); //x, y; w, h
   
   fill(255); //pinkkkk #F24484
@@ -222,9 +237,9 @@ void draw(){
   if(mouseX > 440 && mouseX < 500 && mouseY > 120 && mouseY < 180)
   fill(#F24484);
   rect(440, 120, 70, 70);
-  String n = "electric guitar";
-  fill(255); //white
-  text(n, 437, 195, 280, 320); //x, y; w, h
+  String n = "open hi-hat";
+  fill(0); 
+  text(n, 442, 195, 280, 320); //x, y; w, h
   
   fill(#CECECE); //yellow #F2DE44
   rect(525, 120, 70, 70); //525 across, 120 down and rect is 70 by 70
@@ -232,9 +247,9 @@ void draw(){
   if(mouseX > 525 && mouseX < 585 && mouseY > 120 && mouseY < 180)
   fill(#F2DE44);
   rect(525, 120, 70, 70);
-  String o = "electric piano";
-  fill(255); //white
-  text(o, 523, 195, 280, 320); //x, y; w, h
+  String o = "rim shot";
+  fill(0);
+  text(o, 537, 195, 280, 320); //x, y; w, h
   
   fill(#CECECE); //even darker blue #4448F2
   rect(610, 120, 70, 70); //610 across, 120 down and rect is 70 by 70
@@ -242,9 +257,9 @@ void draw(){
   if(mouseX > 610 && mouseX < 670 && mouseY > 120 && mouseY < 180)
   fill(#4448F2);
   rect(610, 120, 70, 70);
-  String p = "sticks";
-  fill(255); //white
-  text(p, 630, 195, 280, 320); //x, y; w, h
+  String p = "snare 1";
+  fill(0); 
+  text(p, 625, 195, 280, 320); //x, y; w, h
   
 //------------------------------------------------------------------------------------
 
@@ -255,9 +270,9 @@ void draw(){
   if(mouseX > 15 && mouseX < 75 && mouseY > 225 && mouseY < 285)
   fill(#6FF214);
   rect(15, 225, 70, 70);
-  String q = "claves";
-  fill(255); //white
-  text(q, 30, 300, 280, 320); //x, y; w, h
+  String q = "claves 2";
+  fill(0); 
+  text(q, 28, 300, 280, 320); //x, y; w, h
   
   fill(255); //bright purple #D414F2
   rect(100, 225, 70, 70); //100 across, 225 down and rect is 70 by 70
@@ -265,9 +280,9 @@ void draw(){
   if(mouseX > 100 && mouseX < 175 && mouseY > 225 && mouseY < 285)
   fill(#D414F2);
   rect(100, 225, 70, 70);
-  String r = "cymbal 3";
-  fill(255); //white
-  text(r, 110, 300, 280, 320); //x, y; w, h
+  String r = "tom 1";
+  fill(0); 
+  text(r, 120, 300, 280, 320); //x, y; w, h
   
   fill(255); //bright orange #F2A514 
   rect(185, 225, 70, 70); //185 across, 225 down and rect is 70 by 70
@@ -275,9 +290,9 @@ void draw(){
   if(mouseX > 185 && mouseX < 245 && mouseY > 225 && mouseY < 285)
   fill(#F2A514 );
   rect(185, 225, 70, 70);
-  String s = "guitar 1";
-  fill(255); //white
-  text(s, 199, 300, 280, 320); //x, y; w, h
+  String s = "hi tom 2";
+  fill(0);
+  text(s, 198, 300, 280, 320); //x, y; w, h
   
   fill(255); //bright red #F21414
   rect(270, 225, 70, 70); //270 across, 225 down and rect is 70 by 70
@@ -285,8 +300,8 @@ void draw(){
   if(mouseX > 270 && mouseX < 330 && mouseY > 225 && mouseY < 285)
   fill(#F21414);
   rect(270, 225, 70, 70);
-  String t = "bass 1";
-  fill(255); //white
+  String t = "kick 2";
+  fill(0); 
   text(t, 287, 300, 280, 320); //x, y; w, h
   
   fill(255); //another blue #14B8F2
@@ -295,9 +310,9 @@ void draw(){
   if(mouseX > 355 && mouseX < 415 && mouseY > 225 && mouseY < 285)
   fill(#14B8F2);
   rect(355, 225, 70, 70);
-  String u = "flute";
-  fill(255); //white
-  text(u, 377, 300, 280, 320); //x, y; w, h
+  String u = "kick 3";
+  fill(0); 
+  text(u, 375, 300, 280, 320); //x, y; w, h
   
   fill(255); //turquoise #14F2C7
   rect(440, 225, 70, 70); //440 across, 225 down and rect is 70 by 70
@@ -305,9 +320,9 @@ void draw(){
   if(mouseX > 440 && mouseX < 500 && mouseY > 225 && mouseY < 285)
   fill(#14F2C7);
   rect(440, 225, 70, 70);
-  String v = "cowbell";
-  fill(255); //white
-  text(v, 454, 300, 280, 320); //x, y; w, h
+  String v = "cowbell 2";
+  fill(0);
+  text(v, 449, 300, 280, 320); //x, y; w, h
   
   fill(#CECECE); //bright pruple #C914F2
   rect(525, 225, 70, 70); //525 across, 225 down and rect is 70 by 70
@@ -315,9 +330,9 @@ void draw(){
   if(mouseX > 525 && mouseX < 585 && mouseY > 225 && mouseY < 285)
   fill(#C914F2);
   rect(525, 225, 70, 70);
-  String w = "base 2";
-  fill(255); //white
-  text(w, 541, 300, 280, 320); //x, y; w, h
+  String w = "low tom";
+  fill(0); 
+  text(w, 538, 300, 280, 320); //x, y; w, h
   
   fill(#CECECE); //ocean blue #47D4FA
   rect(610, 225, 70, 70); //610 across, 225 down and rect is 70 by 70
@@ -325,9 +340,9 @@ void draw(){
   if(mouseX > 610 && mouseX < 670 && mouseY > 225 && mouseY < 285)
   fill(#47D4FA);
   rect(610, 225, 70, 70);
-  String x = "electric drum";
-  fill(255); //white
-  text(x, 608, 300, 280, 320); //x, y; w, h
+  String x = "mid tom";
+  fill(0); 
+  text(x, 621, 300, 280, 320); //x, y; w, h
 //------------------------------------------------------------------------------------
 
   //FORTH ROW 
@@ -337,9 +352,9 @@ void draw(){
   if(mouseX > 15 && mouseX < 75 && mouseY > 330 && mouseY < 390)
   fill(#F79E0C);
   rect(15, 330, 70, 70);
-  String y = "snare 2";
-  fill(255); //white
-  text(y, 28, 405, 280, 320); //x, y; w, h
+  String y = "rim";
+  fill(0); 
+  text(y, 39, 405, 280, 320); //x, y; w, h
 
   fill(255); //blue #49DDF0
   rect(100, 330, 70, 70); //100 across, 330 down and rect is 70 by 70
@@ -347,9 +362,9 @@ void draw(){
   if(mouseX > 100 && mouseX < 175 && mouseY > 330 && mouseY < 390)
   fill(#49DDF0);
   rect(100, 330, 70, 70);
-  String z = "pizzicato";
-  fill(255); //white
-  text(z, 109, 405, 280, 320); //x, y; w, h
+  String z = "snare 2";
+  fill(0); 
+  text(z, 113, 405, 280, 320); //x, y; w, h
   
   fill(255); //green #35C16B
   rect(185, 330, 70, 70); //185 across, 330 down and rect is 70 by 70
@@ -357,9 +372,9 @@ void draw(){
   if(mouseX > 185 && mouseX < 245 && mouseY > 330 && mouseY < 390)
   fill(#35C16B);
   rect(185, 330, 70, 70);
-  String ab = "bottle";
-  fill(255); //white
-  text(ab, 203, 405, 280, 320); //x, y; w, h
+  String ab = "snare 3";
+  fill(0); 
+  text(ab, 199, 405, 280, 320); //x, y; w, h
   
   fill(255); //yellow #F0DE16
   rect(270, 330, 70, 70); //270 across, 330 down and rect is 70 by 70
@@ -368,7 +383,7 @@ void draw(){
   fill(#F0DE16);
   rect(270, 330, 70, 70);
   String ac = "clap";
-  fill(255); //white
+  fill(0); 
   text(ac, 293, 405, 280, 320); //x, y; w, h
 
   fill(255); //pink #F016CC
@@ -377,8 +392,8 @@ void draw(){
   if(mouseX > 355 && mouseX < 415 && mouseY > 330 && mouseY < 390)
   fill(#F016CC);
   rect(355, 330, 70, 70);
-  String ad = "guitar 2";
-  fill(255); //white
+  String ad = "cymabl";
+  fill(0); 
   text(ad, 370, 405, 280, 320); //x, y; w, h
   
   fill(255); //darker orange #F07416
@@ -387,8 +402,8 @@ void draw(){
   if(mouseX > 440 && mouseX < 500 && mouseY > 330 && mouseY < 390)
   fill(#F07416);
   rect(440, 330, 70, 70);
-  String ae = "snare 3";
-  fill(255); //white
+  String ae = "snare 4";
+  fill(0);
   text(ae, 454, 405, 280, 320); //x, y; w, h
   
   fill(#CECECE); //purple #8916F0
@@ -397,9 +412,9 @@ void draw(){
   if(mouseX > 525 && mouseX < 585 && mouseY > 330 && mouseY < 390)
   fill(#8916F0);
   rect(525, 330, 70, 70);
-  String af = "electronic kick";
-  fill(255); //white
-  text(af, 520, 405, 280, 320); //x, y; w, h
+  String af = "kick 4";
+  fill(0); 
+  text(af, 543, 405, 280, 320); //x, y; w, h
   
   fill(#CECECE); //red #F01641 
   rect(610, 330, 70, 70); //610 across, 330 down and rect is 70 by 70
@@ -407,9 +422,9 @@ void draw(){
   if(mouseX > 610 && mouseX < 670 && mouseY > 330 && mouseY < 390)
   fill(#F01641 );
   rect(610, 330, 70, 70);
-  String ag = "breath noise";
-  fill(255); //white
-  text(ag, 610, 405, 280, 320); //x, y; w, h  
+  String ag = "tom 2";
+  fill(0); 
+  text(ag, 628, 405, 280, 320); //x, y; w, h  
   //------------------------------------------------------------------------------------
   
   //FIFTH ROW 
@@ -420,7 +435,7 @@ void draw(){
   fill(255);
   rect(100, 535, 70, 70);
   String ah = "play";
-  fill(255); //white
+  fill(0); 
   text(ah, 190, 563, 280, 320); //x, y; w, h
   
   fill(#EA8A2F); //orange #EA8A2F
@@ -429,8 +444,8 @@ void draw(){
   if(mouseX > 270 && mouseX < 330 && mouseY > 535 && mouseY < 595)
   fill(255);
   rect(270, 535, 70, 70);
-  String ai = "stop";
-  fill(255); //white
+  String ai = "pause";
+  fill(0); 
   text(ai, 360, 563, 280, 320); //x, y; w, h
   
   fill(#E8E113);
@@ -474,6 +489,32 @@ void draw(){
   
   fill(255);
   ellipse(580, 600, 15, 15); //x, y; w, h
+//------------------------------------------------------------------------------------
+
+  //SIXTH ROW
+  // change the rate control value based on mouse position
+  //float rate = map(mouseX, 0, width, 0.0f, 3.f);
+  //float rate2 = map(mouseY, 620, height, 0.5f, 5.f); 
+    if (mouseY > 7*height/10){
+  float rate = map(mouseX, 0, width, 0.0f, 3.f);
+  
+  rateControl.value.setLastValue(rate);
+  }
+  //rateControl.value.setLastValue(rate);
+ // rateControl.value.setLastValue(rate2);
+  
+   stroke(0);
+  // draw the waveforms
+  for( int ii = 0; ii < out.bufferSize() - 1; ii++ )
+  {
+    // find the x position of each buffer value
+    float x1  =  map( ii, 0, out.bufferSize(), 0, width );
+    float x2  =  map( ii+1, 0, out.bufferSize(), 0, width );
+    
+    // draw a line from one buffer position to the next for both channels
+    line( x1, 700  - out.left.get(ii)*50,  x2, 700  - out.left.get(ii+1)*50);
+    line( x1, 730 - out.right.get(ii)*50, x2, 730 - out.right.get(ii+1)*50);
+  }  
 }
 
 void mousePressed() {
@@ -588,14 +629,38 @@ void mousePressed() {
 
   //FIFTH ROW
   if(mouseX > 100 && mouseX < 175 && mouseY > 535 && mouseY < 595) {
-  music1.trigger();
+  filePlayer.play();
+  
 }
   if(mouseX > 270 && mouseX < 330 && mouseY > 535 && mouseY < 595) {
-  music1.stop();
+  filePlayer.pause();
+}
+
+
+  //FIFTH ROW
+  if(mouseX > 100 && mouseX < 175 && mouseY > 535 && mouseY < 595) {
+  filePlayer.play();
+  
+}
+  if(mouseX > 270 && mouseX < 330 && mouseY > 535 && mouseY < 595) {
+  filePlayer.pause();
 }
 }
 
-void mouseMoved()
+void keyPressed()
 {
-//change in frequency   
+  if ( key == 'i' || key == 'I' )
+  {
+    // with interpolation on, it will sound as a record would when slowed down or sped up
+    rateControl.setInterpolation( true );
+  }
+}
+
+void keyReleased()
+{
+  if ( key == 'i' || key == 'I' )
+  {
+    // with interpolation off, the sound will become "crunchy" when playback is slowed down
+    rateControl.setInterpolation( false );
+  }
 }
